@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class MainActivity extends AppCompatActivity {
 //variables de la interfaz
@@ -28,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     Switch bloquear;
     TextView estado;
     String readResource;
+    int puerto;
+    String ip;
+    Socket socketCliente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,15 @@ public class MainActivity extends AppCompatActivity {
         bloquear=(Switch) findViewById(R.id.bloquear);
         estado=(TextView) findViewById(R.id.estado);
 
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
+        try {
+            socketCliente=new Socket(ip,puerto);
+
+        }catch (IOException e) {
+            e.printStackTrace();
+            Log.e("socket","error en socket");
+        }
+
 
 
 
@@ -51,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Toast.makeText(getApplicationContext(),"Abriendo",Toast.LENGTH_SHORT).show();
             estado.setText("Abierto");
+
         }
 
 
@@ -59,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         if(estado.getText().equals("Cerrado")){
             Toast.makeText(getApplicationContext(),"Error, ya está cerrado",Toast.LENGTH_SHORT).show();
         }else {
+
             Toast.makeText(getApplicationContext(),"Cerrando",Toast.LENGTH_SHORT).show();
             estado.setText("Cerrado");
         }
